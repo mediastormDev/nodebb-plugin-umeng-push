@@ -11,6 +11,9 @@
 		},
 		{
 			"hook": "filter:admin.header.build", "method": "addAdminNavigation"
+		},
+		{
+			"hook": "action:notification.pushed", "method": "sendNotificationToFirebase"
 		}
 	],
 	"staticDirs": {

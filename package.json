@@ -1,7 +1,7 @@
 {
-  "name": "nodebb-plugin-quickstart",
-  "version": "0.4.1",
-  "description": "A starter kit for quickly creating NodeBB plugins",
+  "name": "nodebb-plugin-firebase-notification",
+  "version": "1.0.0",
+  "description": "A plugin to send notifications to a particular url",
   "main": "library.js",
   "repository": {
     "type": "git",
@@ -10,8 +10,9 @@
   "keywords": [
     "nodebb",
     "plugin",
-    "quickstart",
-    "shell"
+    "firebase",
+    "url",
+    "notification"
   ],
   "husky": {
     "hooks": {
@@ -26,8 +27,8 @@
     ]
   },
   "author": {
-    "name": "psychobunny",
-    "email": "psycho.bunny@hotmail.com"
+    "name": "mayank.harsani",
+    "email": "mayank.harsani@gmail.com"
   },
   "license": "MIT",
   "bugs": {
