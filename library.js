@@ -6,7 +6,7 @@ const winston = require.main.require('winston');
 const striptags = require('striptags');
 const controllers = require('./lib/controllers');
 const user = require.main.require('./src/user');
-const db = require.main.require('./src/db');
+const db = require.main.require('./src/database');
 const translator = require.main.require('./src/translator');
 const request = require.main.require('request');
 const async = require.main.require('async');
@@ -124,7 +124,7 @@ plugin.sendNotificationToFirebase = async function (data) {
 plugin.saveToken = async (req, res) => {
 	winston.info(`[plugins/umeng-push] saveToken => ${req}`);
 	db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
-}
+};
 
 plugin.checkLoggedIn = async function (req, res) {
 	if (req.user && parseInt(req.user.uid, 10) > 0) return true;
