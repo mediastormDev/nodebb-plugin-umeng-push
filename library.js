@@ -3,13 +3,13 @@
 const nconf = require.main.require('nconf');
 const url = require('url');
 const winston = require.main.require('winston');
+const striptags = require('striptags');
 const controllers = require('./lib/controllers');
 const user = require.main.require('./src/user');
 const db = require.main.require('./src/db');
 const translator = require.main.require('./src/translator');
 const request = require.main.require('request');
 const async = require.main.require('async');
-const striptags = require('striptags');
 const meta = require.main.require('./src/meta');
 const { v4: uuidv4 } = require.main.require('uuid');
 
@@ -34,6 +34,9 @@ plugin.init = async (params) => {
 	});
 	routeHelpers.setupAdminPageRoute(router, '/admin/plugins/umeng-push', middleware, [], controllers.renderAdminPage);
 	plugin.reloadSettings();
+
+	// use router not helper to bind token
+	router.post('/api/umeng/token', plugin.checkLoggedIn, plugin.saveToken);
 };
 
 plugin.reloadSettings = async () => {
@@ -111,15 +114,22 @@ plugin.sendNotificationToFirebase = async function (data) {
 				if (err) {
 					winston.error(`[plugins/umeng-push] [${requestId}] [${err.message}]`);
 				} else if (result.length) {
-					winston.info(`[plugin/firebase-notification] [${requestId}] [${result}]`);
+					winston.info(`[plugin/umeng-push] [${requestId}] [${result}]`);
 				}
 			});
 		},
 	]);
 };
 
-plugin.saveToken = (uid, token, callback) => {
-	db.setObjectField('pushbullet:tokens', uid, token, callback);
+plugin.saveToken = async (req, res) => {
+	winston.info(`[plugins/umeng-push] saveToken => ${req}`);
+	db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
+}
+
+plugin.checkLoggedIn = async function (req, res) {
+	if (req.user && parseInt(req.user.uid, 10) > 0) return true;
+	res.redirect('403');
 };
+
 
 module.exports = plugin;
