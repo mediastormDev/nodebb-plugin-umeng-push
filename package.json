@@ -1,5 +1,5 @@
 {
-  "name": "nodebb-plugin-firebase-notification",
+  "name": "nodebb-plugin-umeng-push",
   "version": "1.0.0",
   "description": "A plugin to send notifications to a particular url",
   "main": "library.js",
