@@ -1,7 +1,8 @@
 #################
 ## Eclipse
 #################
-
+.idea/
+pnpm-lock.yaml
 *.pydevproject
 .project
 .metadata

@@ -1,5 +1,5 @@
 {
-	"id": "nodebb-plugin-quickstart",
+	"id": "nodebb-plugin-umeng-push",
 	"url": "https://github.com/NodeBB/nodebb-plugin-quickstart",
 	"library": "./library.js",
 	"hooks": [
