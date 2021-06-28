@@ -36,7 +36,7 @@ plugin.init = async (params) => {
 	plugin.reloadSettings();
 
 	// use router not helper to bind token
-	router.post('/api/umeng/token', plugin.checkLoggedIn, plugin.saveToken);
+	router.post('/umeng/token', plugin.checkLoggedIn, plugin.saveToken);
 };
 
 plugin.reloadSettings = async () => {
