@@ -123,12 +123,16 @@ plugin.sendNotificationToFirebase = async function (data) {
 
 plugin.saveToken = async (req, res) => {
 	winston.info(`[plugins/umeng-push] saveToken => ${req}`);
-	return db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
+	await db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
+	res.json({ success: true });
 };
 
-plugin.checkLoggedIn = async function (req, res) {
-	if (req.user && parseInt(req.user.uid, 10) > 0) return true;
-	res.redirect('403');
+plugin.checkLoggedIn = function (req, res, next) {
+	if (req.user) {
+		if (parseInt(req.user.uid, 10) > 0) next(); else res.redirect('403');
+	} else {
+		res.redirect('403');
+	}
 };
 
 
