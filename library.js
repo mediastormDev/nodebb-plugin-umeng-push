@@ -123,7 +123,7 @@ plugin.sendNotificationToFirebase = async function (data) {
 
 plugin.saveToken = async (req, res) => {
 	winston.info(`[plugins/umeng-push] saveToken => ${req}`);
-	db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
+	return db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
 };
 
 plugin.checkLoggedIn = async function (req, res) {
