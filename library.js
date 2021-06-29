@@ -80,12 +80,8 @@ plugin.addAdminNavigation = function (header, callback) {
 };
 
 plugin.sendNotificationToUMeng = async function (data) {
-	const requestId = uuidv4();
 	var notifObj = data.notification;
 	var uids = data.uids;
-	var path = notifObj.path;
-	var notificationId = notifObj.nid;
-	var fromUid = notifObj.from;
 	console.log(notifObj);
 
 	if (!Array.isArray(uids) || !uids.length || !notifObj) {
@@ -106,7 +102,7 @@ plugin.sendNotificationToUMeng = async function (data) {
 		},
 		function (text) {
 			winston.info(`[plugins/umeng-push] push notification => uid: ${uids} token:${JSON.stringify(tokens)}`);
-			uPush.android.unicast(title, text, tokens);
+			uPush.android.unicast(title, text, uids.map(uid => tokens[uid]));
 		},
 	]);
 };
