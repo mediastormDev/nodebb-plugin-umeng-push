@@ -4,7 +4,9 @@ const nconf = require.main.require('nconf');
 const url = require('url');
 const winston = require.main.require('winston');
 const striptags = require('striptags');
+const { UPush } = require('node-umeng');
 const controllers = require('./lib/controllers');
+const topics = require.main.require('./src/topics');
 const user = require.main.require('./src/user');
 const db = require.main.require('./src/database');
 const translator = require.main.require('./src/translator');
@@ -12,6 +14,10 @@ const request = require.main.require('request');
 const async = require.main.require('async');
 const meta = require.main.require('./src/meta');
 const { v4: uuidv4 } = require.main.require('uuid');
+
+const appkey = nconf.get('umeng:appkey');
+const appSecret = nconf.get('umeng:appSecret');
+const uPush = new UPush(appkey, appSecret);
 
 const plugin = {};
 
@@ -73,7 +79,7 @@ plugin.addAdminNavigation = function (header, callback) {
 	callback(null, header);
 };
 
-plugin.sendNotificationToFirebase = async function (data) {
+plugin.sendNotificationToUMeng = async function (data) {
 	const requestId = uuidv4();
 	var notifObj = data.notification;
 	var uids = data.uids;
@@ -85,44 +91,28 @@ plugin.sendNotificationToFirebase = async function (data) {
 	if (!Array.isArray(uids) || !uids.length || !notifObj) {
 		return;
 	}
-	const usernames = await user.getUsersFields(uids, ['username']);
-	const from = await user.getUserField(fromUid, 'username');
+
+	const [tokens, title] = await Promise.all([
+		db.getObjectFields('umeng:tokens', uids),
+		notifObj.pid ? topics.getTopicFieldByPid('title', notifObj.pid) : null,
+	]);
+
 	async.waterfall([
 		function (next) {
 			translator.translate(notifObj.bodyShort, function (translated) {
 				var notificationBody = translated.replace(/<strong>/g, '').replace(/<\/strong>/g, '');
-				next(null, striptags(notificationBody), from);
+				next(null, striptags(notificationBody));
 			});
 		},
-		function (text, next) {
-			const body = {
-				usernames: usernames,
-				notification: text,
-				path: url.resolve(nconf.get('url'), `${path}?_=${notifObj.datetime}`),
-				notificationId: notificationId,
-				from: from,
-				notificationTime: notifObj.datetime,
-			};
-			winston.info(`[plugins/umeng-push] [${requestId}] Request body sending to firebase [${JSON.stringify(body)}]`);
-			winston.info(`[plugins/umeng-push] [${requestId}] Sending notification to usernames [${usernames}]`);
-			request({
-				url: 'https://asia-south1-doraa-e7dd2.cloudfunctions.net/sendNotification',
-				method: 'POST',
-				body: body,
-				json: true,
-			}, function (err, request, result) {
-				if (err) {
-					winston.error(`[plugins/umeng-push] [${requestId}] [${err.message}]`);
-				} else if (result.length) {
-					winston.info(`[plugin/umeng-push] [${requestId}] [${result}]`);
-				}
-			});
+		function (text) {
+			winston.info(`[plugins/umeng-push] push notification => uid: ${uids} token:${tokens}`);
+			uPush.android.unicast(title, text, tokens);
 		},
 	]);
 };
 
 plugin.saveToken = async (req, res) => {
-	winston.info(`[plugins/umeng-push] saveToken => uid: ${req.user.uid} token: ${req.body.token}`);
+	winston.info(`[plugins/umeng-push] saveToken => uid: ${req.user.uid} token: ${req.body.deviceToken}`);
 	await db.setObjectField('umeng:tokens', req.user.uid, req.body.token);
 	res.json({ success: true });
 };

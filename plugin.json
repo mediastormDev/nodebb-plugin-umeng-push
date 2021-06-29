@@ -13,7 +13,7 @@
 			"hook": "filter:admin.header.build", "method": "addAdminNavigation"
 		},
 		{
-			"hook": "action:notification.pushed", "method": "sendNotificationToFirebase"
+			"hook": "action:notification.pushed", "method": "sendNotificationToUMeng"
 		}
 	],
 	"staticDirs": {
