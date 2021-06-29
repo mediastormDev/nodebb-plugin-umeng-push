@@ -17,7 +17,7 @@ const { v4: uuidv4 } = require.main.require('uuid');
 
 const appkey = nconf.get('umeng:appkey');
 const appSecret = nconf.get('umeng:appSecret');
-const uPush = new UPush(appkey, appSecret);
+const uPush = new UPush(appkey, appSecret, { ospush: false, os_activity: null });
 
 const plugin = {};
 
