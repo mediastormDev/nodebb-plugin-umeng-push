@@ -105,7 +105,7 @@ plugin.sendNotificationToUMeng = async function (data) {
 			});
 		},
 		function (text) {
-			winston.info(`[plugins/umeng-push] push notification => uid: ${uids} token:${tokens}`);
+			winston.info(`[plugins/umeng-push] push notification => uid: ${uids} token:${JSON.stringify(tokens)}`);
 			uPush.android.unicast(title, text, tokens);
 		},
 	]);
