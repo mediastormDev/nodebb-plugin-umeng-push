@@ -15,7 +15,7 @@ const async = require.main.require('async');
 const meta = require.main.require('./src/meta');
 const { v4: uuidv4 } = require.main.require('uuid');
 
-const appkey = nconf.get('umeng:appkey');
+const appkey = nconf.get('umeng:appKey');
 const appSecret = nconf.get('umeng:appSecret');
 const uPush = new UPush(appkey, appSecret, { ospush: false, os_activity: null });
 
