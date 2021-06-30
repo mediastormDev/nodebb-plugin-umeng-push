@@ -81,7 +81,8 @@ plugin.addAdminNavigation = function (header, callback) {
 
 plugin.sendNotificationToUMeng = async function (data) {
 	var notifObj = data.notification;
-	var uids = data.uids;
+	var fromUid = notifObj.from;
+	var uids = data.uids.filter(it => it !== fromUid);
 	console.log(notifObj);
 
 	if (!Array.isArray(uids) || !uids.length || !notifObj) {
