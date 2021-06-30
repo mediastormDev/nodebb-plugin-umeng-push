@@ -1,19 +1,15 @@
 'use strict';
 
 const nconf = require.main.require('nconf');
-const url = require('url');
 const winston = require.main.require('winston');
 const striptags = require('striptags');
 const { UPush } = require('node-umeng');
 const controllers = require('./lib/controllers');
 const topics = require.main.require('./src/topics');
-const user = require.main.require('./src/user');
 const db = require.main.require('./src/database');
 const translator = require.main.require('./src/translator');
-const request = require.main.require('request');
 const async = require.main.require('async');
 const meta = require.main.require('./src/meta');
-const { v4: uuidv4 } = require.main.require('uuid');
 
 const appkey = nconf.get('umeng:appKey');
 const appSecret = nconf.get('umeng:appSecret');
