@@ -1,9 +1,10 @@
 'use strict';
 
+import UPush from './lib/u-push/index'
+
 const nconf = require.main.require('nconf');
 const winston = require.main.require('winston');
 const striptags = require('striptags');
-const { UPush } = require('node-umeng');
 const controllers = require('./lib/controllers');
 const topics = require.main.require('./src/topics');
 const db = require.main.require('./src/database');
