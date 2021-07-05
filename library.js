@@ -98,8 +98,12 @@ plugin.sendNotificationToUMeng = async function (data) {
 			});
 		},
 		function (text) {
-			winston.info(`[plugins/umeng-push] push notification => uid: ${uids} token:${JSON.stringify(tokens)}`);
-			uPush.android.listcast(title || text, title ? text : '', uids.map(uid => tokens[uid])).then(res => winston.info(res));
+		    const finalTokens = uids.map(uid => tokens[uid])
+		    const finalTitle = title || text
+			const finalText = title ? text : ''
+			winston.info(`[plugins/umeng-push] push notification => uid: ${uids} token:${JSON.stringify(finalTokens)}`);
+			uPush.android.listcast(finalTitle, finalText, finalTokens.filter((token) => token.length === 44)).then(res => winston.info(res));
+			uPush.ios.listcast(finalTitle, finalText, finalTokens.filter((token) => token.length === 64)).then(res => winston.info(res));
 		},
 	]);
 };
